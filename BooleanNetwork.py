@@ -36,14 +36,12 @@ def get_random_modular(n, modules, directedEdges, p, getCommInfo=False, shared=N
             while len(pairings[randomComm]) < 2:
                 randomComm = seeded_rng.randint(0, modules)
             selection = seeded_rng.choice(pairings[randomComm], 2, replace=True)
-            #print("STUCK MODULAR")
         adjMatrix[selection[0]][selection[1]] += 1
 
     def add_random_edge(): #adds edge anywhere
         randEdge = seeded_rng.choice(n, 2, replace=False)
         while adjMatrix[randEdge[0]][randEdge[1]] != 0:
             randEdge = seeded_rng.choice(n, 2, replace=False)
-            #print("STUCK RANDOM")
         adjMatrix[randEdge[0]][randEdge[1]] += 1
     inModuleEdges = round(directedEdges * p)
     randEdges = directedEdges - inModuleEdges
@@ -81,7 +79,6 @@ def getRandomTransitionFunctions():
 def getGraphInformedTransitionFunctions(adjMatrix):
     result = np.zeros((N, 2 **N))
     for i in range(N):
-        print(i)
         col = adjMatrix[:, i]
         affectingIndices = np.nonzero(col)[0]
         randomOutputs = seeded_rng.randint(0, 2, size = 2 ** len(affectingIndices))
@@ -148,7 +145,6 @@ def runSim(ICs, funcs):
         seenStates.append(convertToIndex(state))
         state = timeStep2(funcs, state)
         if seenStates.__contains__(convertToIndex(state)):
-            print("yay " + str(i))
             if i != t - 1:
                 timeseries[i+1] = state
                 endTime = i + 1
@@ -206,7 +202,6 @@ def buildFullTransitionNetwork2(network, funcs, neglectNetwork = False):
     basin_assignments = {}
     attractor_sizes = {}
     for i in range(2 **N):
-        print(i)
         IC = convertToState(i)
         runSim2(IC, funcs, basins, basin_assignments, attractor_sizes)
         if not neglectNetwork:
@@ -240,14 +235,12 @@ def createTransitionNetwork(network):
 
 def buildFullTransitionNetwork(network, funcs):
     for i in range(2 **N):
-        print(i)
         IC = convertToState(i)
         runSim(IC, funcs)
         createTransitionNetwork(network)
 
 def buildPartialTransitionNetwork(network, funcs):
     for i in range(trials):
-        print(i)
         randomIC = rng.randint(0, 2 **N, dtype = np.int64)
         stateIC = convertToState(randomIC)
         runSim(stateIC, funcs)
